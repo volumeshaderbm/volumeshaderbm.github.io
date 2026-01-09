@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>毒蘑菇显卡测试官网 - 权威GPU性能跑分 | 专业显卡天梯榜</title>
+    <meta name="keywords" content="毒蘑菇显卡测试, GPU跑分, 显卡压力测试, 显卡天梯图, 显卡性能检测, 3DMark替代, 硬件监控">
+    <meta name="description" content="毒蘑菇显卡测试提供最专业的GPU压力测试、网页版在线跑分及全平台测试客户端下载。实时监控核心频率、温度及帧率，助力玩家看透硬件体质。">
+
+<link rel="shortcut icon" href="./logo.png">
+    
+    <style>
+        :root {
+            --primary-color: #a6ff00; /* 毒蘑菇荧光绿 */
+            --secondary-color: #2d3436;
+            --text-dark: #e0e0e0;
+            --text-light: #aaa;
+            --bg-dark: #0f1111; /* 深色背景 */
+            --card-bg: #1a1d1d;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Consolas", "PingFang SC", "Microsoft YaHei", sans-serif; }
+
+        body { background-color: var(--bg-dark); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+
+        /* 导航 */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 10%;
+            background: rgba(15, 17, 17, 0.95);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #333;
+        }
+        .logo { font-size: 24px; font-weight: bold; color: var(--primary-color); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+
+        /* Hero 区域 */
+        .hero {
+            background: radial-gradient(circle at top right, #1a2f1a 0%, #0f1111 100%);
+            padding: 60px 10%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 85vh;
+        }
+        .hero-content { flex: 1.2; padding-right: 40px; }
+        .hero-content h1 { font-size: 3.5rem; margin-bottom: 20px; line-height: 1.2; color: #fff; }
+        .hero-content p { font-size: 1.2rem; color: var(--text-light); margin-bottom: 40px; }
+
+        .download-btns { display: flex; gap: 20px; flex-wrap: wrap; }
+        .btn {
+            padding: 14px 35px;
+            border-radius: 8px; /* 方正一点更有工业感 */
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .btn-web { background: var(--primary-color); color: #000; border: 2px solid var(--primary-color); }
+        .btn-app { background: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); }
+        .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(166, 255, 0, 0.2); }
+
+        /* 预览图版块（保持结构不动） */
+        .hero-image {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .square-cover {
+            width: 460px;
+            height: 460px;
+            object-fit: cover;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+            border: 2px solid #333;
+        }
+
+        .square-cover:hover {
+            transform: scale(1.03);
+            border-color: var(--primary-color);
+        }
+
+        .surprise-text {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.6rem;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            animation: breathe 2s infinite ease-in-out;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+        }
+
+        /* 功能展示 */
+        .features { padding: 80px 10%; text-align: center; background: #0a0a0a; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 50px; }
+        .feature-item { padding: 40px; border-radius: 20px; background: var(--card-bg); transition: 0.3s; border: 1px solid #222; }
+        .feature-item:hover { border-color: var(--primary-color); transform: translateY(-5px); }
+        .feature-item h3 { color: var(--primary-color); margin-bottom: 15px; }
+        .feature-item p { color: #888; }
+
+        /* 弹窗样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #1a1a1a;
+            color: #ccc;
+            width: 90%;
+            max-width: 700px;
+            max-height: 80vh;
+            border-radius: 12px;
+            padding: 40px;
+            position: relative;
+            overflow-y: auto;
+            border: 1px solid var(--primary-color);
+        }
+        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; color: var(--primary-color); }
+        .modal-body h2 { margin-bottom: 20px; color: var(--primary-color); border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .modal-body p { margin-bottom: 15px; white-space: pre-line; }
+
+        /* 页脚 */
+        footer { padding: 60px 10%; background: #050505; color: #666; text-align: center; border-top: 1px solid #222; }
+        .footer-links { margin-bottom: 25px; }
+        .footer-links a { color: #888; text-decoration: none; margin: 0 15px; cursor: pointer; transition: 0.3s; }
+        .footer-links a:hover { color: var(--primary-color); }
+
+        @media (max-width: 968px) {
+            .hero { flex-direction: column; text-align: center; padding: 40px 5%; }
+            .hero-content { padding-right: 0; margin-bottom: 40px; }
+            .hero-content h1 { font-size: 2.5rem; }
+            .square-cover { width: 300px; height: 300px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="/" class="logo">🍄 毒蘑菇显卡测试</a>
+        <div class="nav-links">
+           <a href="https://ip.harmonylink.net/share/k4y20r" class="btn btn-web" style="padding: 8px 20px; font-size: 14px;">🔥科学上网解决打不开</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>挖掘硬件的<br><span style="color: var(--primary-color);">极限潜能</span></h1>
+            <p>毒蘑菇测试：专业的GPU基准评估工具。支持网页端一键体质检测及桌面级深度压力测试，实时监测频率、显存及热功耗，让虚假参数无处遁形。</p>
+            <div class="download-btns">
+                <a href="https://vsbm.wwwnav.com/" target="_blank" rel="nofollow" class="btn btn-web">
+                    <span>📊</span> 发布页入口
+                </a>
+                <a href="https://2025gj.pages.dev/" target="_blank" rel="nofollow" class="btn btn-app">
+                    <span>💾</span> 神仙工具网站
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-image">
+            <a href="https://appxiazai.pages.dev/" target="_blank" rel="nofollow">
+                <img src="./click.jpg" alt="预览图" class="square-cover">
+            </a>
+            <div class="surprise-text">🔥网址大全🔞全都有</div>
+        </div>
+    </section>
+
+    <section class="features">
+        <h2>深度硬件分析引擎</h2>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <h3>🧪 压力负载</h3>
+                <p>内置高强度渲染场景，模拟极限游戏负载，快速检测显卡供电与散热稳定性。</p>
+            </div>
+            <div class="feature-item">
+                <h3>📈 实时监控</h3>
+                <p>精确到毫秒级的传感器读取，覆盖核心频率、电压、风扇转速及显存占用。</p>
+            </div>
+            <div class="feature-item">
+                <h3>🏆 权威比对</h3>
+                <p>接入全球大数据天梯榜单，一键对比同型号体质排行，识别官方缩水或二手矿卡。</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-links">
+            <a onclick="showModal('about')">关于测试</a>
+            <a onclick="showModal('disclaimer')">测试须知</a>
+            <a onclick="showModal('contact')">技术支持</a>
+        </div>
+        <p>© 2026 毒蘑菇显卡测试 | 硬件体质评估实验室</p>
+    </footer>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modalBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        const pageData = {
+            about: {
+                title: "关于毒蘑菇显卡测试",
+                content: "毒蘑菇测试是由硬件发烧友团队开发的专业GPU评估平台。我们致力于打破硬件厂商的信息差，为玩家提供简单、公正、高负载的测试工具。\n\n目前平台涵盖了从Web端轻量化评估到Windows全功能压力测试的全维度方案，是装机验货、超频调教的必备助手。"
+            },
+            disclaimer: {
+                title: "测试须知与免责声明",
+                content: "1. 压力测试会使显卡瞬间达到满载功耗，请确保电源功率充足且散热良好。\n2. 因硬件老化、超频失败或设备缺陷导致的黑屏、缩缸等物理损伤，本平台不承担法律责任。\n3. 本工具仅供硬件性能评估参考，严禁用于任何非法篡改固件等违规操作。"
+            },
+            contact: {
+                title: "技术支持与商务",
+                content: "如果您在测试中发现Bug，或有OEM批量授权需求，请通过以下渠道：\n\n● 开发者反馈：dev@poison-mushroom.com\n● 商务洽谈：biz@poison-mushroom.com\n\n实验室在线时间：24/7 (自动监控系统)"
+            }
+        };
+
+        const overlay = document.getElementById('modalOverlay');
+        const modalBody = document.getElementById('modalBody');
+
+        function showModal(key) {
+            const data = pageData[key];
+            modalBody.innerHTML = `<h2>${data.title}</h2><p>${data.content}</p>`;
+            overlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            overlay.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        overlay.onclick = function(e) {
+            if (e.target === overlay) closeModal();
+        }
+    </script>
+</body>
+</html>
